@@ -1,0 +1,114 @@
+1. API Server - Application's business logics. DB Access, Auth, Logging etc. Produce JSON.
+2. Rendering Server - SSR. Take JSON and produce HTML. Will help to scale our application. 
+We will place here REACT Application.
+React server side rendering is not very fast. So we may increase server quality for the rendering server.
+3. Users Browsers
+=========
+
+In react application we normally use ReactDOM library which has 2 main methods - render and renderToString.
+render - Creates instances of a bunch of components and mounts them to a DOM node.
+renderToString - Renders a bunch of components one time and produces a string out of all the 
+resulting HTML.
+
+So here we will write react code inside node js application. And we will make node js application 
+able to render JSX code.
+
+How JSX works in client side-
+===============================
+components.js files -> we import all components in a single file index.js 
+->then entire tree of files and folders run through Webpack! -> and then Babel (JSX to ES5)
+-> generates bundle.js
+
+Same thing we will run on server side.
+For that we have added one webpack serverside config file. and will build our bundle.js using that 
+by the command - 
+
+npm run dev-server
+npm run dev:build-server
+
+after using npm-run-all, we can use a single command-
+npm run dev
+
+server side rendering or isomorphic javascript or universal javascript - same code can run on server
+as well as on the browser.
+First we were using completely different modules for coding - 
+in node we were using common javascript module
+and in react app we were using ES 2015 module.
+But as we are using Webpack and Babel, we can use only ES 2015 module for both the sides.
+
+now to handle multiple event handler we should have to create the client side js bundle.
+
+server side bundle.js will not go to client side. all secure things we can place here, 
+like rest APIend points and related things.
+
+We can use multiple webpack config files and can merge them
+
+Again for server side bundle we can remove unnecessary things and can make it little smaller in size.
+
+Navigation-
+===============
+there are 2 router modules- express router and react router.
+Express router will not handle anything, it just pass the request to react router.
+If any routing returns json or related things, we can add them inside express router.
+
+We will use 2 different routers- staticRouter and browserRouter
+staticRouter will work on server side and browserRouter will work on client side.
+
+API-
+=======
+https://react-ssr-api.herokuapp.com/
+https://react-ssr-api.herokuapp.com/users
+https://react-ssr-api.herokuapp.com/users/xss
+after login via google auth, https://react-ssr-api.herokuapp.com/auth/google
+https://react-ssr-api.herokuapp.com/current_user
+https://react-ssr-api.herokuapp.com/admins
+https://react-ssr-api.herokuapp.com/logout
+
+
+Big 4 Redux chanllanges for server side rendering-
+1. Redux needs different configuration on browser vs server - 
+2. Aspects of authentication needs to be handled on server. Normally this is only on browser,
+3. Need some way to detect when all initial data load action creators are completed on server.
+4. Need state rehydration on the browser
+
+By using redux we can create a central store and its updation has a specific workflow.
+components -> despatch -> Actions -> Reducers -> Store.
+Now this store has a subscription module. Store tiggers events whenever it is updated. 
+Components dependant on store will subscribe them and will get updated state values as props.
+
+
+Handling XSS attack - Cross site scripting attack.
+e.g. in one user name we can write, username: "</script><script>alert('1234567890')</script>"
+then our code will be broken on the browser.
+
+cookie based authentication-
+
+To add a new api call-
+1. Add a new action in client/actions/index.js and give a name of that. Call the serverside api caller.
+2. Add a new reducer in reducers folder. And call the new action added in step 1.
+3. Once reducer is completed, we will hook that in the index combiner with a new case 
+4. Now we have to call the new action - if an action need to be called 100% in every cases we should call it from App component.
+5. 
+
+Auth-
+google oAuth
+
+https://materializecss.com
+=============================
+<!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+            
+seo-
+The open graph protocol - http://ogp.me
+For SEO we should add few open graph meta tags.
+For that we will use react-helmet.
+in open graph protocol, 4 meta tags are mandatory - og:title, og:type, og:image, og:url.
+TTFB - Time to first byte.
+This TTFB is very less if we use renderToNodeStreaming instead of using renderToString. 
+But in that case we will not able to do any kind of redirection, like we have done in case of authentication
+is failed.
+
+
